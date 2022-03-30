@@ -9,15 +9,6 @@ const schema = new mongoose.Schema({
   },
   userid: {
     type: Number
-  },
-  fullName: {
-    type: String
-  },
-  username: {
-    type: String
-  },
-  access_level: {
-    type: Number
   }
 });
 

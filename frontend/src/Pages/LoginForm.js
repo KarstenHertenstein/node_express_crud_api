@@ -1,13 +1,13 @@
 import axios from 'axios';
 import { useContext, useState } from "react"
 import { useHistory } from "react-router-dom";
-import wrongPassword from '../components/wrongPassword';
-import { LoginContext } from '../Helper/Context';
+import { LoginContext, RootLoginContext } from '../Helper/Context';
 
 
 function LoginForm() {
 
     const {loggedIn, setLoggedIn} = useContext(LoginContext);
+    const {rootLoggedIn, setRootLoggedIn} = useContext(RootLoginContext);
     
     let history = useHistory();
     
@@ -21,12 +21,24 @@ function LoginForm() {
       }).then((response) => {
         if(response.status === 200) {
           setLoggedIn(true);
+        
+          if(response.data[0].email === "root@root.de") {
+            setRootLoggedIn(true);
+            console.log("Root logged in!");
+          }
+
           history.push("/upload");
-        }else if(response.status === 401){
-          console.log("LOL!");
-          return <wrongPassword/>;
         }
-      });
+        
+      }).catch((error) => {
+        console.log(error);
+        if(error.response.data === "Wrong password!") {
+          history.push("/wrongPassword");
+          
+        }else if(error.response.data === "No such email!") {
+          history.push("/wrongEmail");
+        }
+      })
     };
     
     return (
